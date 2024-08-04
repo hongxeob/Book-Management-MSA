@@ -13,11 +13,15 @@ spring:
   cloud:
     gateway:
       routes:
-#        - id: first-service
-#          uri: lb://MY-FIRST-SERVICE
-#          predicates:
-#            - Path=/first-service/**
-#        - id: second-service
-#          uri: lb://MY-SECOND-SERVICE
-#          predicates:
-#            - Path=/second-service/**
+        - id: book
+          uri: lb://BOOK-SERVER
+          predicates:
+            - Path=/book/**
+        - id: bookCatalog
+          uri: lb://BOOK-CATALOG-SERVER
+          predicates:
+            - Path=/book-catalog/**
+        - id: rental
+          uri: lb://RENTAL-SERVER
+          predicates:
+            - Path=/rental/**
