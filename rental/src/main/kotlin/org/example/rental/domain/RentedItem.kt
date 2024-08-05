@@ -16,7 +16,7 @@ class RentedItem(
     bookId: Long,
     bookTitle: String,
     rentedDate: LocalDate,
-    rental: Rental,
+    dueDate: LocalDate,
 ) : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +30,31 @@ class RentedItem(
     var bookTitle: String = bookTitle
         protected set
 
-    @Column(name = "rented_dated")
+    @Column(name = "rented_date")
     var rentedDated: LocalDate = rentedDate
+        protected set
+
+    @Column(name = "due_date")
+    var dueDate: LocalDate = dueDate
         protected set
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnoreProperties("rentedItems")
-    var rental: Rental = rental
+    var rental: Rental? = null
         protected set
+
+    companion object {
+        fun createRentedItem(
+            bookId: Long,
+            bookTitle: String,
+            rentedDate: LocalDate,
+        ): RentedItem {
+            return RentedItem(
+                bookId,
+                bookTitle,
+                rentedDate,
+                rentedDate.plusDays(2),
+            )
+        }
+    }
 }
