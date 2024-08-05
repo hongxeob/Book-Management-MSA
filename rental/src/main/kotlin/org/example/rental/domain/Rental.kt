@@ -3,9 +3,11 @@
 package org.example.rental.domain
 
 import jakarta.persistence.*
+import org.example.rental.exception.RentalException
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import java.io.Serializable
+import java.time.LocalDate
 
 @Entity
 @Table(name = "rental")
@@ -46,4 +48,51 @@ class Rental(
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     protected val mutableReturnedItems: MutableSet<ReturnedItem> = mutableSetOf()
     val returnedItems: Set<ReturnedItem> get() = mutableReturnedItems.toSet()
+
+    fun checkRentalAvailable(): Boolean {
+        if (this.rentalStatus == RentalStatus.RENT_UNAVAILABLE || this.lateFee != 0L) {
+            throw RentalException("Rent is unavailable")
+        }
+
+        if (this.rentedItems.size >= 5) {
+            throw RentalException("대출 도서 가능한 도서의 수는 ${5 - this.rentedItems.size} 권 입니다.")
+        }
+
+        return true
+    }
+
+    fun returnBook(bookId: Long) {
+        val rentedItem = this.rentedItems.first { it -> it.bookId == bookId }
+        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.bookId, rentedItem.bookTitle, LocalDate.now()))
+    }
+
+    fun rentBook(
+        bookId: Long,
+        title: String,
+    ): Rental {
+        this.addRentedItem(RentedItem.createRentedItem(bookId, title, LocalDate.now()))
+        return this
+    }
+
+    fun addRentedItem(createRentedItem: RentedItem) {
+        mutableRentedItems.add(createRentedItem)
+    }
+
+    fun removeRentedItem(rentedItem: RentedItem) {
+        mutableRentedItems.remove(rentedItem)
+    }
+
+    fun addReturnedItem(returnedItem: ReturnedItem) {
+        mutableReturnedItems.add(returnedItem)
+    }
+
+    companion object {
+        fun createRental(userId: Long): Rental {
+            return Rental(
+                userId,
+                RentalStatus.RENT_AVAILABLE,
+                0,
+            )
+        }
+    }
 }
