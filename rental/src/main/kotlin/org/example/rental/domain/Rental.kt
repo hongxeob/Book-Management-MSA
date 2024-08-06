@@ -61,16 +61,35 @@ class Rental(
         return true
     }
 
-    fun returnBook(bookId: Long) {
-        val rentedItem = this.rentedItems.first { it -> it.bookId == bookId }
-        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.bookId, rentedItem.bookTitle, LocalDate.now()))
-    }
-
+    // 대출 처리 메서드
     fun rentBook(
         bookId: Long,
         title: String,
     ): Rental {
         this.addRentedItem(RentedItem.createRentedItem(bookId, title, LocalDate.now()))
+        return this
+    }
+
+    // 반납 처리 메서드
+    fun returnBook(bookId: Long): Rental {
+        val rentedItem = this.rentedItems.first { it -> it.bookId == bookId }
+        this.addReturnedItem(ReturnedItem.createReturnedItem(rentedItem.bookId, rentedItem.bookTitle, LocalDate.now()))
+        this.removeRentedItem(rentedItem)
+
+        return this
+    }
+
+    fun overdueBook(bookId: Long): Rental {
+        val rentedItem = this.rentedItems.first { it -> it.bookId == bookId }
+        this.addOverdueItem(
+            OverdueItem.createOverdueItem(
+                rentedItem.bookId,
+                rentedItem.bookTitle,
+                rentedItem.dueDate,
+            ),
+        )
+        this.removeRentedItem(rentedItem)
+
         return this
     }
 
@@ -84,6 +103,10 @@ class Rental(
 
     fun addReturnedItem(returnedItem: ReturnedItem) {
         mutableReturnedItems.add(returnedItem)
+    }
+
+    fun addOverdueItem(overdueItem: OverdueItem) {
+        mutableOverdueItems.add(overdueItem)
     }
 
     companion object {
