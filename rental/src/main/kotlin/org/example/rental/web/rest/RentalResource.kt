@@ -4,10 +4,7 @@ import org.example.rental.adaptor.BookClient
 import org.example.rental.service.RentalService
 import org.example.rental.web.rest.dto.RentalDTO
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
@@ -15,6 +12,7 @@ class RentalResource(
     private val rentalService: RentalService,
     private val bookClient: BookClient,
 ) {
+    // 도서 대출 API
     @PostMapping("/rentals/{userId}/RentedItem/{book}")
     fun rentBook(
         @PathVariable("userId") userId: Long,
@@ -29,5 +27,16 @@ class RentalResource(
         val rental = rentalService.rentBook(userId, bookInfoDTO.id, bookInfoDTO.title)
 
         return ResponseEntity.ok(RentalDTO.from(rental))
+    }
+
+    // 도서 반납 API
+    @DeleteMapping("/rentals/{userId}/RentedItem/{book}")
+    fun returnBook(
+        @PathVariable("userId") userId: Long,
+        @PathVariable("book") bookId: Long,
+    ): ResponseEntity<RentalDTO> {
+        val returnBook = rentalService.returnBook(userId, bookId)
+
+        return ResponseEntity.ok(RentalDTO.from(returnBook))
     }
 }
