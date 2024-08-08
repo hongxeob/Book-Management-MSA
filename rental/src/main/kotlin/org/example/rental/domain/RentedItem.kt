@@ -53,7 +53,7 @@ class RentedItem(
                 bookId,
                 bookTitle,
                 rentedDate,
-                rentedDate.plusDays(2),
+                rentedDate.plusWeeks(2),
             )
         }
     }
