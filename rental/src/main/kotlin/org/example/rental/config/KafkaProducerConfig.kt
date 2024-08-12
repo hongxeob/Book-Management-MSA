@@ -15,6 +15,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer
 @EnableKafka
 class KafkaProducerConfig {
     @Suppress("ktlint:standard:property-naming")
+    // todo -> yml설정
     @Value("\${spring.kafka.producer.bootstrap-servers}")
     private lateinit var BOOTSTRAP_SERVERS: String
 
