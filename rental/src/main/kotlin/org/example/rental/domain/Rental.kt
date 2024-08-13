@@ -105,8 +105,38 @@ class Rental(
         mutableReturnedItems.add(returnedItem)
     }
 
+    fun returnOverdueBook(bookId: Long): Rental {
+        val overdueItem = this.overdueItems.first { it.bookId == bookId }
+        addRentedItem(
+            RentedItem.createRentedItem(
+                overdueItem.bookId,
+                overdueItem.bookTitle,
+                LocalDate.now(),
+            ),
+        )
+
+        removeOverdueItem(overdueItem)
+
+        return this
+    }
+
     fun addOverdueItem(overdueItem: OverdueItem) {
         mutableOverdueItems.add(overdueItem)
+    }
+
+    fun removeOverdueItem(overdueItem: OverdueItem?) {
+        mutableOverdueItems.remove(overdueItem)
+    }
+
+    fun makeRentUnable() {
+        this.rentalStatus = RentalStatus.RENT_UNAVAILABLE
+        this.lateFee += 30
+    }
+
+    fun releaseOverdue(): Rental {
+        this.lateFee = 0L
+        this.rentalStatus = RentalStatus.RENT_AVAILABLE
+        return this
     }
 
     companion object {
