@@ -1,4 +1,4 @@
-package org.example.rental.domain
+package org.example.rental.domain.enumration
 
 enum class RentalStatus {
     RENT_AVAILABLE,
