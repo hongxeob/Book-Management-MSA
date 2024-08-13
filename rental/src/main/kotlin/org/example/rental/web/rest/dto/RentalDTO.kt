@@ -1,7 +1,7 @@
 package org.example.rental.web.rest.dto
 
 import org.example.rental.domain.Rental
-import org.example.rental.domain.RentalStatus
+import org.example.rental.domain.enumration.RentalStatus
 
 data class RentalDTO(
     val id: Long,
@@ -10,13 +10,12 @@ data class RentalDTO(
     val lateFee: Long,
 ) {
     companion object {
-        fun from(rental: Rental): RentalDTO {
-            return RentalDTO(
+        fun from(rental: Rental): RentalDTO =
+            RentalDTO(
                 id = rental.id,
                 userId = rental.userId,
                 rentalStatus = rental.rentalStatus,
                 lateFee = rental.lateFee,
             )
-        }
     }
 }

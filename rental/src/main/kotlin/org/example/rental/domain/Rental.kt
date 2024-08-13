@@ -3,6 +3,7 @@
 package org.example.rental.domain
 
 import jakarta.persistence.*
+import org.example.rental.domain.enumration.RentalStatus
 import org.example.rental.exception.RentalException
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
@@ -140,12 +141,11 @@ class Rental(
     }
 
     companion object {
-        fun createRental(userId: Long): Rental {
-            return Rental(
+        fun createRental(userId: Long): Rental =
+            Rental(
                 userId,
                 RentalStatus.RENT_AVAILABLE,
                 0,
             )
-        }
     }
 }
