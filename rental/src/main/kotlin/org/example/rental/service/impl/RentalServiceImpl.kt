@@ -32,8 +32,8 @@ class RentalServiceImpl(
     ): Rental {
         log.info("=== 도서 대출 서비스 시작 ===")
         val rental =
-            rentalRepository.findByUserId().orElseThrow {
-                throw RentalException("사용자에 해당하는 대출이 없습니다.")
+            rentalRepository.findByUserId(userId).orElseThrow {
+                throw RentalException("사용자에 해당하는 대출이 없습니다. userId => $userId")
             }
         log.info("=== 찾은 Rental : $rental === ")
         rental.checkRentalAvailable()
@@ -58,7 +58,7 @@ class RentalServiceImpl(
         bookId: Long,
     ): Rental {
         log.info("=== 도서 반납 서비스 시작 ===")
-        val rental = getRentalByUserId()
+        val rental = getRentalByUserId(userId)
         rental.returnBook(bookId)
         rentalRepository.save(rental)
 
@@ -71,8 +71,50 @@ class RentalServiceImpl(
         return rental
     }
 
-    private fun getRentalByUserId(): Rental {
-        return rentalRepository.findByUserId().orElseThrow {
+    @Transactional
+    override fun beOverdueBook(
+        rentalId: Long,
+        bookId: Long,
+    ): Long {
+        val rental = getRentalById(rentalId)
+
+        rental.overdueBook(bookId)
+        rental.makeRentUnable()
+
+        return bookId
+    }
+
+    @Transactional
+    override fun returnOverdueBook(
+        userId: Long,
+        bookId: Long,
+    ): Rental {
+        val rental = getRentalByUserId(userId)
+        rental.returnOverdueBook(bookId)
+        rentalProducer.updateBookStatus(bookId, "AVAILABLE")
+        rentalProducer.updateBookCatalogStatus(bookId, "RETURN_BOOK")
+
+        return rental
+    }
+
+    @Transactional
+    override fun releaseOverdueBook(userId: Long): Rental {
+        val rental = getRentalByUserId(userId)
+        rental.releaseOverdue()
+
+        return rental
+    }
+
+    private fun getRentalById(rentalId: Long): Rental {
+        val rental =
+            rentalRepository.findById(rentalId).orElseThrow {
+                throw RentalException("ID에 맞는 Rental을 찾을 수 없습니다. ID => $rentalId")
+            }
+        return rental
+    }
+
+    private fun getRentalByUserId(userId: Long): Rental {
+        return rentalRepository.findByUserId(userId).orElseThrow {
             throw RentalException("사용자에 해당하는 대출이 없습니다.")
         }
     }

@@ -13,4 +13,16 @@ interface RentalService {
         userId: Long,
         bookId: Long,
     ): Rental
+
+    fun beOverdueBook(
+        rentalId: Long,
+        bookId: Long,
+    ): Long
+
+    fun returnOverdueBook(
+        userId: Long,
+        bookId: Long,
+    ): Rental
+
+    fun releaseOverdueBook(userId: Long): Rental
 }
