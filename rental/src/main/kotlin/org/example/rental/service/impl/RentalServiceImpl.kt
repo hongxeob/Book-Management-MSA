@@ -105,6 +105,11 @@ class RentalServiceImpl(
         return rental
     }
 
+    override fun findLateFee(userId: Long): Long {
+        val rental = getRentalByUserId(userId)
+        return rental.lateFee
+    }
+
     private fun getRentalById(rentalId: Long): Rental {
         val rental =
             rentalRepository.findById(rentalId).orElseThrow {
@@ -113,9 +118,8 @@ class RentalServiceImpl(
         return rental
     }
 
-    private fun getRentalByUserId(userId: Long): Rental {
-        return rentalRepository.findByUserId(userId).orElseThrow {
+    private fun getRentalByUserId(userId: Long): Rental =
+        rentalRepository.findByUserId(userId).orElseThrow {
             throw RentalException("사용자에 해당하는 대출이 없습니다.")
         }
-    }
 }
