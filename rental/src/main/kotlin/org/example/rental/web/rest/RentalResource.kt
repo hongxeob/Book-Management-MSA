@@ -4,6 +4,7 @@ package org.example.rental.web.rest
 
 import feign.FeignException
 import org.example.rental.adaptor.BookClient
+import org.example.rental.adaptor.UserClient
 import org.example.rental.service.RentalService
 import org.example.rental.web.rest.dto.LateFeeDto
 import org.example.rental.web.rest.dto.RentalDTO
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*
 class RentalResource(
     private val rentalService: RentalService,
     private val bookClient: BookClient,
+    private val userClient: UserClient,
 ) {
     // 도서 대출 API
     @PostMapping("/rentals/{userId}/RentedItem/{book}")
@@ -39,9 +41,9 @@ class RentalResource(
         @PathVariable("userId") userId: Long,
         @PathVariable("book") bookId: Long,
     ): ResponseEntity<RentalDTO> {
-        val returnBook = rentalService.returnBook(userId, bookId)
+        val rental = rentalService.returnBook(userId, bookId)
 
-        return ResponseEntity.ok(RentalDTO.from(returnBook))
+        return ResponseEntity.ok(RentalDTO.from(rental))
     }
 
     @PutMapping("/rentals/release-overdue/user/{userId}")
@@ -52,7 +54,7 @@ class RentalResource(
         val lateFeeDto = LateFeeDto(userId, lateFee)
 
         try {
-            userClinet.usePoint(lateFeeDto)
+            userClient.usePoint(lateFeeDto)
         } catch (e: FeignException.FeignClientException) {
             e.printStackTrace()
         }

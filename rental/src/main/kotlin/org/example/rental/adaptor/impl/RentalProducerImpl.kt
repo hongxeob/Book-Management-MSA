@@ -1,9 +1,10 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
-package org.example.rental.adaptor
+package org.example.rental.adaptor.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.example.rental.adaptor.RentalProducer
 import org.example.rental.domain.event.BookCatalogChanged
 import org.example.rental.domain.event.PointChanged
 import org.example.rental.domain.event.StockChanged
