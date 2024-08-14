@@ -25,4 +25,6 @@ interface RentalService {
     ): Rental
 
     fun releaseOverdueBook(userId: Long): Rental
+
+    fun findLateFee(userId: Long): Long
 }

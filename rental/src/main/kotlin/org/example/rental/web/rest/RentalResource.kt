@@ -1,7 +1,11 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package org.example.rental.web.rest
 
+import feign.FeignException
 import org.example.rental.adaptor.BookClient
 import org.example.rental.service.RentalService
+import org.example.rental.web.rest.dto.LateFeeDto
 import org.example.rental.web.rest.dto.RentalDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -38,5 +42,22 @@ class RentalResource(
         val returnBook = rentalService.returnBook(userId, bookId)
 
         return ResponseEntity.ok(RentalDTO.from(returnBook))
+    }
+
+    @PutMapping("/rentals/release-overdue/user/{userId}")
+    fun releaseOverdueBook(
+        @PathVariable("userId") userId: Long,
+    ): ResponseEntity<RentalDTO> {
+        val lateFee = rentalService.findLateFee(userId)
+        val lateFeeDto = LateFeeDto(userId, lateFee)
+
+        try {
+            userClinet.usePoint(lateFeeDto)
+        } catch (e: FeignException.FeignClientException) {
+            e.printStackTrace()
+        }
+        val rental = rentalService.releaseOverdueBook(userId)
+
+        return ResponseEntity.ok(RentalDTO.from(rental))
     }
 }
