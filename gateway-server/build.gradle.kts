@@ -5,6 +5,12 @@ plugins {
     kotlin("plugin.spring") version "1.9.24"
 }
 
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
+}
+
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
 
@@ -21,6 +27,7 @@ repositories {
 extra["springCloudVersion"] = "2023.0.3"
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway-mvc")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
