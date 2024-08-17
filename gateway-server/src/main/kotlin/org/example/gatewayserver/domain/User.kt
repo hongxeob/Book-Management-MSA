@@ -2,9 +2,11 @@ package org.example.gatewayserver.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import java.io.Serializable
@@ -52,5 +54,29 @@ class User :
         get() = lastName
         protected set
 
+    // 이메일
+    @Size(min = 5, max = 254)
+    @Email
+    @Column(length = 254, unique = true)
+    var email: String = ""
+        get() = email
+        protected set
+
+    @ManyToMany
+    @JsonIgnore
+    @JoinTable(
+        name = "user_authority",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "authority_name", referencedColumnName = "name")],
+    )
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
+    protected val mutableAuthority: MutableSet<Authority> = mutableSetOf()
+    val authorities: Set<Authority> get() = mutableAuthority.toSet()
+
     override fun getId(): Long = this.id
+
+    fun updateUserinfo()  {
+        // todo
+    }
 }
