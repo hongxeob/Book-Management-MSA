@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package org.example.gatewayserver.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -6,6 +8,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
+import org.example.gatewayserver.exception.UserException
 import org.hibernate.annotations.BatchSize
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
@@ -62,6 +65,11 @@ class User :
         get() = email
         protected set
 
+    // 포인트
+    var point: Int = 1000
+        get() = point
+        protected set
+
     @ManyToMany
     @JsonIgnore
     @JoinTable(
@@ -76,7 +84,21 @@ class User :
 
     override fun getId(): Long = this.id
 
-    fun updateUserinfo()  {
+    fun updateUserinfo() {
         // todo
+    }
+
+    fun savePoints(point: Int): Int {
+        this.point += point
+        return this.point
+    }
+
+    fun usePoints(point: Int): Int {
+        if (this.point >= point) {
+            this.point -= point
+            return this.point
+        } else {
+            throw UserException("잔여 포인트가 모자라 결제가 불가능 합니다.")
+        }
     }
 }

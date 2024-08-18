@@ -1,5 +1,6 @@
 package org.example.gatewayserver.service.impl
 
+import org.example.gatewayserver.domain.User
 import org.example.gatewayserver.exception.UserException
 import org.example.gatewayserver.repository.UserRepository
 import org.example.gatewayserver.service.UserService
@@ -14,12 +15,36 @@ class UserServiceImpl(
 ) : UserService {
     @Transactional
     override fun updateUser(userDTO: UserDTO): UserDTO {
-        val user =
-            userRepository.findById(userDTO.id).orElseThrow {
-                throw UserException("ID로 유저를 찾을 수 없습니다.")
-            }
+        val user = getUserById(userDTO.id)
 
         user.updateUserinfo()
+
+        return UserDTO.from(user)
+    }
+
+    private fun getUserById(userId: Long): User =
+        userRepository.findById(userId).orElseThrow {
+            throw UserException("ID로 유저를 찾을 수 없습니다.")
+        }
+
+    @Transactional
+    fun savePoints(
+        userId: Long,
+        point: Int,
+    ): UserDTO {
+        val user = getUserById(userId)
+        user.savePoints(point)
+
+        return UserDTO.from(user)
+    }
+
+    @Transactional
+    fun usePoints(
+        userId: Long,
+        point: Int,
+    ): UserDTO {
+        val user = getUserById(userId)
+        user.usePoints(point)
 
         return UserDTO.from(user)
     }
