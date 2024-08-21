@@ -9,4 +9,13 @@ interface BookService {
     )
 
     fun findBookInfo(bookId: Long): Book
+
+    fun registerNewBook(
+        book: Book,
+        inStockId: Long,
+    ): Book
+
+    fun updateBook(book: Book): Book
+
+    fun deleteBook(bookId: Long)
 }

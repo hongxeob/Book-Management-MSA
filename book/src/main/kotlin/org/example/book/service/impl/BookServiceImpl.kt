@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class BookServiceImpl(
     private val bookRepository: BookRepository,
+    private val inStockBookService: InStockBookServiceImpl,
 ) : BookService {
     override fun processChangeBookState(
         bookId: Long,
@@ -26,5 +27,26 @@ class BookServiceImpl(
             }
 
         return book
+    }
+
+    @Transactional
+    override fun registerNewBook(
+        book: Book,
+        inStockId: Long,
+    ): Book {
+        val newBook = bookRepository.save(book)
+        inStockBookService.delete(inStockId)
+
+        // todo code
+        // sendBookCatalogEvent("NEW_BOOK", newBook.id)
+    }
+
+    @Transactional
+    override fun updateBook(book: Book): Book {
+    }
+
+    @Transactional
+    override fun deleteBook(bookId: Long) {
+        TODO("Not yet implemented")
     }
 }
