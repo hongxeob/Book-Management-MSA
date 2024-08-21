@@ -1,4 +1,4 @@
-package org.example.book.domain
+package org.example.book.domain.vo
 
 import jakarta.persistence.Embeddable
 

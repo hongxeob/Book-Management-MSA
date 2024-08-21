@@ -1,9 +1,12 @@
 package org.example.book.domain
 
 import jakarta.persistence.*
+import org.example.book.domain.eumration.Source
+import org.example.book.domain.vo.ISBN
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import java.io.Serializable
+import java.time.LocalDate
 
 @Entity
 @Table(name = "in_stock_books", schema = "public")
@@ -14,6 +17,8 @@ class InStockBook(
     author: String,
     publisher: String,
     isbn: ISBN,
+    publicationDate: LocalDate,
+    source: Source,
 ) : Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +45,19 @@ class InStockBook(
         protected set
 
     @Embedded
+    @Column(name = "isbn")
     var isbn = isbn
         get() = isbn
+        protected set
+
+    @Column(name = "publication_date")
+    var publicationDate = publicationDate
+        get() = publicationDate
+        protected set
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "source")
+    var source = source
+        get() = source
         protected set
 }
