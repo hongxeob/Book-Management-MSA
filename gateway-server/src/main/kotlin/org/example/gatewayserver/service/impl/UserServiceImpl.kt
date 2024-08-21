@@ -28,7 +28,7 @@ class UserServiceImpl(
         }
 
     @Transactional
-    fun savePoints(
+    override fun savePoints(
         userId: Long,
         point: Int,
     ): UserDTO {
@@ -39,7 +39,7 @@ class UserServiceImpl(
     }
 
     @Transactional
-    fun usePoints(
+    override fun usePoints(
         userId: Long,
         point: Int,
     ): UserDTO {

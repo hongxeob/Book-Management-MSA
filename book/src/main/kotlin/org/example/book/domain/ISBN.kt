@@ -3,7 +3,7 @@ package org.example.book.domain
 import jakarta.persistence.Embeddable
 
 @Embeddable
-class Isbn(
+class ISBN(
     val isbn: Long,
 ) {
     init {
