@@ -1,38 +1,45 @@
 package org.example.book.service.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.example.book.adaptor.BookProducer
 import org.example.book.domain.Book
-import org.example.book.domain.event.BookCatalogEvent
+import org.example.book.domain.eumration.BookStatus
+import org.example.book.domain.event.BookChangedEvent
 import org.example.book.exception.BookException
 import org.example.book.repository.BookRepository
 import org.example.book.service.BookService
-import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
 class BookServiceImpl(
     private val bookRepository: BookRepository,
     private val inStockBookService: InStockBookServiceImpl,
-    private val kafkaTemplate: KafkaTemplate<String, String>,
+    private val bookProducer: BookProducer,
 ) : BookService {
     private val objectMapper = ObjectMapper()
 
+    @Transactional
     override fun processChangeBookState(
         bookId: Long,
         bookStatus: String,
     ) {
-        // todo
+        val book = getBookId(bookId)
+        book.updateStatus(BookStatus.valueOf(bookStatus))
     }
 
     override fun findBookInfo(bookId: Long): Book {
+        val book = getBookId(bookId)
+
+        return book
+    }
+
+    private fun getBookId(bookId: Long): Book {
         val book =
             bookRepository.findById(bookId).orElseThrow {
                 throw BookException("ID로 책을 찾을 수 없습니다.")
             }
-
         return book
     }
 
@@ -61,14 +68,19 @@ class BookServiceImpl(
         eventType: String,
         bookId: Long,
     ) {
-        val event =
-            BookCatalogEvent(
-                eventType,
-                bookId,
-                LocalDateTime.now(),
-            )
-        val message = objectMapper.writeValueAsString(event)
+        val book = getBookId(bookId)
 
-        kafkaTemplate.send(eventType, message)
+        when (eventType) {
+            "NEW_BOOK", "UPDATE_BOOK" -> {
+                val bookChangedEvent =
+                    BookChangedEvent.createTopicStatusIsCreate(book, eventType)
+                bookProducer.sendBookCreateEvent(bookChangedEvent)
+            }
+
+            "DELETE_BOOK" -> {
+                val bookChangedEvent = BookChangedEvent.createTopicStatusIsDelete(book, eventType)
+                bookProducer.sendBookDeleteEvent(bookChangedEvent)
+            }
+        }
     }
 }

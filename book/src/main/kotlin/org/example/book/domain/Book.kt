@@ -75,4 +75,8 @@ class Book(
     var location = location
         get() = location
         protected set
+
+    fun updateStatus(status: BookStatus) {
+        this.bookStatus = status
+    }
 }
