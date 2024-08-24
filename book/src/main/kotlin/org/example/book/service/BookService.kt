@@ -15,7 +15,7 @@ interface BookService {
         inStockId: Long,
     ): Book
 
-    fun updateBook(book: Book): Book
+    fun updateBook(bookId: Long): Book
 
     fun deleteBook(bookId: Long)
 }

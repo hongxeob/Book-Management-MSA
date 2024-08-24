@@ -57,11 +57,19 @@ class BookServiceImpl(
     }
 
     @Transactional
-    override fun updateBook(book: Book): Book = book
+    override fun updateBook(bookId: Long): Book {
+        val book = getBookId(bookId)
+        book.updateStatus(BookStatus.AVAILABLE)
+
+        sendBookCatalogEvent("UPDATE_BOOK", book.id)
+        return book
+    }
 
     @Transactional
     override fun deleteBook(bookId: Long) {
-        TODO("Not yet implemented")
+        val book = getBookId(bookId)
+        bookRepository.delete(book)
+        sendBookCatalogEvent("DELETE_BOOK", book.id)
     }
 
     private fun sendBookCatalogEvent(
