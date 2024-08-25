@@ -12,4 +12,8 @@ interface BookCatalogRepository : MongoRepository<BookCatalog, String> {
     ): Page<BookCatalog>
 
     fun findTop10ByOrderByRentCntDesc(): List<BookCatalog>
+
+    fun deleteByBookId(bookId: Long)
+
+    fun findByBookId(bookId: Long): BookCatalog
 }

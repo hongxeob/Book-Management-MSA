@@ -9,4 +9,5 @@ data class BookChanged(
     val rented: Boolean,
     val rentCnt: Long,
     val bookId: Long,
+    val eventType: String,
 )

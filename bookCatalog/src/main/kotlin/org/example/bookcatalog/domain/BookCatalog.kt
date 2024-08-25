@@ -47,7 +47,7 @@ class BookCatalog(
     var bookId: Long = bookId
 
     companion object {
-        fun registerNewBookCatalog(bookChanged: BookChanged) {
+        fun registerNewBookCatalog(bookChanged: BookChanged): BookCatalog =
             BookCatalog(
                 bookChanged.title,
                 bookChanged.description,
@@ -61,7 +61,6 @@ class BookCatalog(
                 bookChanged.rentCnt,
                 bookChanged.bookId,
             )
-        }
     }
 
     fun rentBook(): BookCatalog {
@@ -73,5 +72,8 @@ class BookCatalog(
     fun returnBook(): BookCatalog {
         this.rented = false
         return this
+    }
+
+    fun updateBookCatalogInfo(bookChanged: BookChanged) {
     }
 }
