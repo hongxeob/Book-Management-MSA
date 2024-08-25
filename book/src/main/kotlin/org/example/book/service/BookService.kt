@@ -1,6 +1,7 @@
 package org.example.book.service
 
 import org.example.book.domain.Book
+import org.example.book.web.rest.dto.BookInfoDTO
 
 interface BookService {
     fun processChangeBookState(
@@ -11,7 +12,7 @@ interface BookService {
     fun findBookInfo(bookId: Long): Book
 
     fun registerNewBook(
-        book: Book,
+        bookRequest: BookInfoDTO,
         inStockId: Long,
     ): Book
 

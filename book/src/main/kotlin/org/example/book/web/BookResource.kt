@@ -1,11 +1,11 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package org.example.book.web
 
 import org.example.book.service.BookService
 import org.example.book.web.rest.dto.BookInfoDTO
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController("/api")
 class BookResource(
@@ -17,6 +17,16 @@ class BookResource(
     ): ResponseEntity<BookInfoDTO> {
         val book = bookService.findBookInfo(bookId)
 
-        return ResponseEntity.ok(BookInfoDTO.from(book))
+        return ResponseEntity.ok(BookInfoDTO.toDTO(book))
+    }
+
+    @PostMapping("/books/{inStockId}")
+    fun registerBook(
+        @PathVariable inStockId: Long,
+        @RequestBody request: BookInfoDTO,
+    ): ResponseEntity<BookInfoDTO> {
+        val response = bookService.registerNewBook(request, inStockId)
+
+        return ResponseEntity.ok(BookInfoDTO.toDTO(response))
     }
 }

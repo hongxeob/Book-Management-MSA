@@ -8,6 +8,7 @@ import org.example.book.domain.event.BookChangedEvent
 import org.example.book.exception.BookException
 import org.example.book.repository.BookRepository
 import org.example.book.service.BookService
+import org.example.book.web.rest.dto.BookInfoDTO
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -45,10 +46,10 @@ class BookServiceImpl(
 
     @Transactional
     override fun registerNewBook(
-        book: Book,
+        bookRequest: BookInfoDTO,
         inStockId: Long,
     ): Book {
-        val newBook = bookRepository.save(book)
+        val newBook = bookRepository.save(BookInfoDTO.toEntity(bookRequest))
         inStockBookService.delete(inStockId)
 
         sendBookCatalogEvent("NEW_BOOK", newBook.id)
