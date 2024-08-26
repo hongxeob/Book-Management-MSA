@@ -7,11 +7,11 @@ import org.example.book.web.rest.dto.BookInfoDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api")
+@RestController("/api/books")
 class BookResource(
     private val bookService: BookService,
 ) {
-    @GetMapping("/books/bookInfo/{bookId}")
+    @GetMapping("/bookInfo/{bookId}")
     fun findBookInfo(
         @PathVariable("bookId") bookId: Long,
     ): ResponseEntity<BookInfoDTO> {
@@ -20,7 +20,7 @@ class BookResource(
         return ResponseEntity.ok(BookInfoDTO.toDTO(book))
     }
 
-    @PostMapping("/books/{inStockId}")
+    @PostMapping("/{inStockId}")
     fun registerBook(
         @PathVariable inStockId: Long,
         @RequestBody request: BookInfoDTO,
