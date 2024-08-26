@@ -36,14 +36,6 @@ class BookServiceImpl(
         return book
     }
 
-    private fun getBookId(bookId: Long): Book {
-        val book =
-            bookRepository.findById(bookId).orElseThrow {
-                throw BookException("ID로 책을 찾을 수 없습니다.")
-            }
-        return book
-    }
-
     @Transactional
     override fun registerNewBook(
         bookRequest: BookInfoDTO,
@@ -91,5 +83,13 @@ class BookServiceImpl(
                 bookProducer.sendBookDeleteEvent(bookChangedEvent)
             }
         }
+    }
+
+    private fun getBookId(bookId: Long): Book {
+        val book =
+            bookRepository.findById(bookId).orElseThrow {
+                throw BookException("ID로 책을 찾을 수 없습니다.")
+            }
+        return book
     }
 }
