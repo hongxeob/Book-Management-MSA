@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package org.example.bookcatalog.domain
 
 import org.example.bookcatalog.domain.event.BookChanged
@@ -24,27 +26,35 @@ class BookCatalog(
 
     @Field("title")
     var title: String = title
+        protected set
 
     @Field("description")
     var description: String = description
+        protected set
 
     @Field("author")
     var author: String = author
+        protected set
 
     @Field("publication_date")
     var publicationDate: LocalDate = publicationDate
+        protected set
 
     @Field("classification")
     var classification: String = classification
+        protected set
 
     @Field("rented")
     var rented: Boolean = rented
+        protected set
 
     @Field("rent_cnt")
     var rentCnt: Long = rentCnt
+        protected set
 
     @Field("book_id")
     var bookId: Long = bookId
+        protected set
 
     companion object {
         fun registerNewBookCatalog(bookChanged: BookChanged): BookCatalog =
