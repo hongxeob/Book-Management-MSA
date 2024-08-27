@@ -1,6 +1,5 @@
 package org.example.book.service.impl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.example.book.adaptor.BookProducer
 import org.example.book.domain.Book
 import org.example.book.domain.eumration.BookStatus
@@ -19,8 +18,6 @@ class BookServiceImpl(
     private val inStockBookService: InStockBookServiceImpl,
     private val bookProducer: BookProducer,
 ) : BookService {
-    private val objectMapper = ObjectMapper()
-
     @Transactional
     override fun processChangeBookState(
         bookId: Long,
