@@ -82,4 +82,4 @@
 
 ## 도메인 모델링
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
